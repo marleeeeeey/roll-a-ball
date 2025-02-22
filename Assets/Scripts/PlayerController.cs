@@ -1,20 +1,26 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     public GameObject capsule;
     public float moveSpeed = 0;
+    public TextMeshProUGUI countText;
+    public GameObject winTextObject;
+    
     
     private Rigidbody rb;
-    private int counter;
+    private int count;
     private float movementX;
     private float movementY;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        counter = 0;
+        count = 0;
+        SetCountText();
+        winTextObject.SetActive(false);
     }
 
     void OnMove(InputValue movementValue)
@@ -24,6 +30,16 @@ public class PlayerController : MonoBehaviour
         movementY = movementVector.y;
     }
 
+    void SetCountText()
+    {
+        countText.text = "Count: " + count.ToString();
+
+        if (count >= 12)
+        {
+            winTextObject.SetActive(true);
+        }
+    }
+    
     void FixedUpdate()
     {
         Vector3 movement = new Vector3(movementX, 0.0f, movementY);
@@ -37,7 +53,8 @@ public class PlayerController : MonoBehaviour
             var targetColor = other.gameObject.GetComponent<Renderer>().material.color;
             capsule.GetComponent<Renderer>().material.color = targetColor;
             other.gameObject.SetActive(false);
-            counter++;
+            count++;
+            SetCountText();
         }
     }
 }
