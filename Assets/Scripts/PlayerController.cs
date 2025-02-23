@@ -1,14 +1,13 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-    public GameObject capsule;
     public float moveSpeed = 0;
     public TextMeshProUGUI countText;
     public GameObject winTextObject;
-    
     
     private Rigidbody rb;
     private int count;
@@ -37,6 +36,8 @@ public class PlayerController : MonoBehaviour
         if (count >= 12)
         {
             winTextObject.SetActive(true);
+
+            Destroy(GameObject.FindGameObjectWithTag("Enemy"));
         }
     }
     
@@ -50,11 +51,20 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Pickup"))
         {
-            var targetColor = other.gameObject.GetComponent<Renderer>().material.color;
-            capsule.GetComponent<Renderer>().material.color = targetColor;
             other.gameObject.SetActive(false);
             count++;
             SetCountText();
+        }
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            Destroy(gameObject);
+            
+            winTextObject.gameObject.SetActive(true);
+            winTextObject.GetComponent<TextMeshProUGUI>().text = "You Loose!";
         }
     }
 }
